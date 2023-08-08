@@ -55,32 +55,3 @@ resource "aws_route_table_association" "public_subnet_b" {
   subnet_id      = aws_subnet.public_subnet_b.id
   route_table_id = aws_route_table.public.id
 }
-
-# Create Security Group to allow HTTP traffic
-resource "aws_security_group" "instance_sg" {
-  name_prefix = "instance_sg_"
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-# Create EC2 Instances
-resource "aws_instance" "web_instance_a" {
-  ami                    = "ami-0f34c5ae932e6f0e4" # AMI ID for Amazon Linux 2023 AMI 2023.1.20230725.0 x86_64 HVM kernel-6.1
-  instance_type          = "t2.micro"
-  subnet_id              = aws_subnet.public_subnet_a.id
-  vpc_security_group_ids = [aws_security_group.instance_sg.id]
-  user_data              = file("userdata.sh")
-}
-
-resource "aws_instance" "web_instance_b" {
-  ami                    = "ami-0f34c5ae932e6f0e4" # AMI ID for Amazon Linux 2023 AMI 2023.1.20230725.0 x86_64 HVM kernel-6.1
-  instance_type          = "t2.micro"
-  subnet_id              = aws_subnet.public_subnet_b.id
-  vpc_security_group_ids = [aws_security_group.instance_sg.id]
-  user_data              = file("userdata.sh")
-}
